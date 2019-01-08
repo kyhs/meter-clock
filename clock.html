@@ -1,0 +1,63 @@
+<html>
+  <head>
+   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+   <script type="text/javascript">
+      google.charts.load('current', {'packages':['gauge']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+
+        var data1 = google.visualization.arrayToDataTable([['Label', 'Value'], ['x1000r/min', 5]]);
+        var data2 = google.visualization.arrayToDataTable([['Label', 'Value'], ['km/h', 55]]);
+
+        var optionsRPM = {
+            width: 800, height: 240,
+            max: 12,
+            min: 0,
+            minorTics: 2,
+            redColor: '#DC3912',
+            redFrom: 10,
+            redTo: 14,
+            majorTicks: ['0', '3', '6', '9', '12'],
+            minorTicks: 3,
+            animation: {
+                duration: 150,
+                easing: 'inAndOut'
+            }
+        };
+        var optionsKMH = {
+            width: 800, height: 240,
+            max: 240,
+            min: 0,
+            minorTics: 2,
+           animation: {
+               duration: 1300,
+               easing: 'out'
+           }
+        };
+
+        var chart = new google.visualization.Gauge(document.getElementById('chart_div'));
+        var chart2 = new google.visualization.Gauge(document.getElementById('chart_div2'));
+
+        chart.draw(data1, optionsRPM);
+        chart2.draw(data2, optionsKMH);
+
+        setInterval(function() {
+          var nowRPM = new Date();
+          data1.setValue(0, 1, nowRPM.getSeconds()%10);
+          chart.draw(data1, optionsRPM);
+          document.getElementById('gear').innerText = (nowRPM.getSeconds() >= 10) ? Math.floor(nowRPM.getSeconds() / 10) : 'N';
+      }, 30);
+        setInterval(function() {
+          data2.setValue(0, 1, new Date().getHours()*10 + new Date().getMinutes()/6);
+          chart2.draw(data2, optionsKMH);
+      }, 1000);
+      }
+    </script>
+  </head>
+  <body>
+    <div id="chart_div" style="display: table-cell;"></div>
+    <div id="gear" style="display: table-cell;"></div>
+    <div id="chart_div2" style="display: table-cell;"></div>
+  </body>
+</html>
